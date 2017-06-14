@@ -5,10 +5,14 @@ import urllib.request
 from xml.dom.minidom import parse, parseString
 from xml.etree import ElementTree
 
+import re
+
 window = Tk()
 window.title("관광지 정보 조회 서비스")
-window.geometry("900x470+100+10")
+window.geometry("900x530+100+10")
 DataList = []
+
+
 
 def InitTopText():
 	TempFont = font.Font(window, size = 20, weight = 'bold', family = 'Consolas')
@@ -37,12 +41,12 @@ def InitBtn행공축():
     Btn행공축 = Button(window, font = TempFont, text = "행사 / 공연 / 축제", command = PutBtn행공축)
     Btn행공축.place(x = 10, y = 260, width = 200, height = 200)
 
-def InitBtn여행코스():
-    global Btn여행코스
+def InitBtn검색():
+    global Btn검색
 
     TempFont = font.Font(window, size = 12, weight = 'bold', family = 'Consolas')
-    Btn여행코스 = Button(window, font = TempFont, text = "여행코스", command = PutBtn여행코스)
-    Btn여행코스.place(x = 220, y = 260, width = 200, height = 200)
+    Btn검색 = Button(window, font = TempFont, text = "검색", command = PutBtn검색)
+    Btn검색.place(x = 220, y = 260, width = 200, height = 200)
 
 def InitBtn레포츠():
     global Btn레포츠
@@ -78,37 +82,38 @@ def InitBtn이전():
 
     TempFont = font.Font(window, size = 12, weight = 'bold', family = 'Consolas')
     Btn이전 = Button(window, font = TempFont, text = "이전", command = PutBtn이전)
-    Btn이전.place(x = 10, y = 500, width = 100, height = 50)
+    Btn이전.place(x = 10, y = 530, width = 100, height = 50)
 
 def InitInputLabel():
-    global InputLabel
+    global InputLabel, EntryText
     TempFont = font.Font(window, size = 15, weight = 'bold', family = 'Consolas')
-    InputLabel = Entry(window, font = TempFont, width = 26, borderwidth = 12, relief = 'ridge')
-    InputLabel.place(x = 10, y = 105)
+    EntryText = StringVar()
+    InputLabel = Entry(window, font = TempFont, width = 26, borderwidth = 12, relief = 'ridge', textvariable = EntryText)
+    InputLabel.place(x = 10, y = 470)
 
 def MoveBtns():
     RenderText.place(y = 110)
-    Btn관광지.place(y = 500)
-    Btn문화시설.place(y = 500)
-    Btn행공축.place(y = 500)
-    Btn여행코스.place(y = 500)
-    Btn레포츠.place(y = 500)
-    Btn숙박.place(y = 500)
-    Btn쇼핑.place(y = 500)
-    Btn음식점.place(y = 500)
+    Btn관광지.place(y = 1000)
+    Btn문화시설.place(y = 1000)
+    Btn행공축.place(y = 1000)
+    Btn검색.place(y = 1000)
+    Btn레포츠.place(y = 1000)
+    Btn숙박.place(y = 1000)
+    Btn쇼핑.place(y = 1000)
+    Btn음식점.place(y = 1000)
     Btn이전.place(y = 50)
 
 def MoveBtnsBack():
-    RenderText.place(y = 500)
+    RenderText.place(y = 530)
     Btn관광지.place(y = 50)
     Btn문화시설.place(y = 50)
     Btn행공축.place(y = 260)
-    Btn여행코스.place(y = 260)
+    Btn검색.place(y = 260)
     Btn레포츠.place(y = 50)
     Btn숙박.place(y = 50)
     Btn쇼핑.place(y = 260)
     Btn음식점.place(y = 260)
-    Btn이전.place(y = 500)
+    Btn이전.place(y = 530)
 
 def PutBtn관광지():
     global 장소
@@ -130,11 +135,17 @@ def PutBtn행공축():
     오퍼레이션 = "areaBasedList?contentTypeId=15&arrange=B&numOfRows=10000"
     관광지정보조회(오퍼레이션, "행사/공연/축제 장소")
 
-def PutBtn여행코스():
-    print("여행코스 눌림")
+def PutBtn검색():
+    print("검색 눌림")
     MoveBtns()
-    오퍼레이션 = "areaBasedList?contentTypeId=25&arrange=B&numOfRows=10000"
-    관광지정보조회(오퍼레이션, "여행코스")
+    keyword = EntryText.get()
+    키워드 = keyword.encode('utf-8')
+    키워드2 = ""
+    for ch in 키워드:
+        키워드2 += str(hex(ch))
+    키워드2 = re.sub('0x', '%', 키워드2)
+    오퍼레이션 = "searchKeyword?keyword=%s&arrange=B" % 키워드2
+    관광지정보조회(오퍼레이션, "검색 장소")
 
 def PutBtn레포츠():
     print("레포츠 눌림")
@@ -172,16 +183,13 @@ def InitRenderText():
 
     TempFont = font.Font(window, size = 10, family = 'Consolas')
     RenderText = Text(window, width = 120, height = 25, borderwidth = 5, relief = 'ridge', yscrollcommand=RenderTextScrollbar.set)
-    RenderText.place(x = 10, y = 470)
+    RenderText.place(x = 10, y = 530)
 
     # RenderTextScrollbar.place(x = 10, y = 105)
     RenderTextScrollbar.config(command = RenderText.yview)
     RenderTextScrollbar.pack(side = RIGHT, fill = BOTH)
 
     # RenderText.configure(state = 'disabled')
-
-def InitLabelFrame():
-	pass
 
 def 관광지정보조회(오퍼레이션, 장소):
     global dom, items
@@ -196,12 +204,21 @@ def 관광지정보조회(오퍼레이션, 장소):
 
     for item in items:
         for node in item.childNodes:
+            if node.nodeName == "addr1":
+                주소 = node.childNodes[0].nodeValue
+            if node.nodeName == "addr2":
+                주소 = 주소 + " " + node.childNodes[0].nodeValue
+            if node.nodeName == "readcount":
+                조회수 = node.childNodes[0].nodeValue.rjust(7)
+            if node.nodeName == "contentid":
+                아이디 = node.childNodes[0].nodeValue.rjust(7)
             if node.nodeName == "title":
                 # print(node.childNodes[0].nodeValue)
                 순서이전 = "%d]" % number
                 순서 = 순서이전.rjust(5)
-                출력문자열 = "[" + 순서 + " %s 이름 : " % 장소 + node.childNodes[0].nodeValue + "\n"
-                RenderText.insert(str(number) + ".0", 출력문자열)
+                출력문자열 = "[" + 순서 + " %s 이름 : " % 장소 + node.childNodes[0].nodeValue + \
+                        "\n       ID     : %s\n       조회수 : %s\n       주소   : %s\n\n" % (아이디,조회수,주소)
+                RenderText.insert(str(number * 5 - 1) + ".0", 출력문자열)
                 number  = number + 1
 
 def PrintDOMtoXML():
@@ -212,7 +229,7 @@ InitTopText()
 InitBtn관광지()
 InitBtn문화시설()
 InitBtn행공축()
-InitBtn여행코스()
+InitBtn검색()
 InitBtn레포츠()
 InitBtn숙박()
 InitBtn쇼핑()
@@ -220,5 +237,6 @@ InitBtn음식점()
 
 InitBtn이전()
 InitRenderText()
+InitInputLabel()
 
 window.mainloop()
