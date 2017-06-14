@@ -8,7 +8,7 @@ import re
 
 window = Tk()
 window.title("관광지 정보 조회 서비스")
-window.geometry("900x900+10+10") # 기본 y값 : 460
+window.geometry("900x460+10+10") # 기본 y값 : 460
 DataList = []
 
 def InitTopText():
@@ -251,15 +251,15 @@ def 관광지정보조회(오퍼레이션, 장소):
                     텍스트출력문자열 = "[" + 순서 + " %s 이름 : " % 장소 + node.childNodes[0].nodeValue + \
                             "\n       ID     : %s\n       조회수 : %s\n\n\n" % (아이디, 조회수)
                     RenderText.insert(str(number * 5 - 1) + ".0", 텍스트출력문자열)
-                    출력문자열 = "[%s ID : %s 조회수 : %s 이름 : %s" % (순서, 아이디, 조회수, 이름)
-                    리스트박스.insert(number, 출력문자열)
+                 #   출력문자열 = "[%s ID : %s 조회수 : %s 이름 : %s" % (순서, 아이디, 조회수, 이름)
+                 #   리스트박스.insert(number, 출력문자열)
                     number = number + 1
                 else:
 	                텍스트출력문자열 = "[" + 순서 + " %s 이름 : " % 장소 + node.childNodes[0].nodeValue + \
 	                           "\n       ID     : %s\n       조회수 : %s\n       주소   : %s\n\n" % (아이디, 조회수, 주소)
 	                RenderText.insert(str(number * 5 - 1) + ".0", 텍스트출력문자열)
-	                출력문자열 = "[%s ID : %s 조회수 : %s 이름 : %s        주소 : %s" % (순서, 아이디, 조회수, 이름, 주소)
-	                리스트박스.insert(number, 출력문자열)
+	            #    출력문자열 = "[%s ID : %s 조회수 : %s 이름 : %s        주소 : %s" % (순서, 아이디, 조회수, 이름, 주소)
+	            #    리스트박스.insert(number, 출력문자열)
 	                number = number + 1
 
 
@@ -283,6 +283,6 @@ InitBtn음식점()
 InitBtn이전()
 InitRenderText()
 
-Init리스트박스()
+#Init리스트박스()
 
 window.mainloop()
