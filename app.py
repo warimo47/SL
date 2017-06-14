@@ -16,6 +16,20 @@ def InitTopText():
 	MainText = Label(window, font = TempFont, text = "[관광지 정보 조회 서비스 App]")
 	MainText.place(x = 240)
 
+def InitInputLabel():
+    global InputLabel, EntryText
+    TempFont = font.Font(window, size = 15, weight = 'bold', family = 'Consolas')
+    EntryText = StringVar()
+    InputLabel = Entry(window, font = TempFont, width = 26, borderwidth = 12, relief = 'ridge', textvariable = EntryText)
+    InputLabel.place(x = 10, y = 60, width = 700)
+
+def InitBtn검색():
+    global Btn검색
+
+    TempFont = font.Font(window, size = 12, weight = 'bold', family = 'Consolas')
+    Btn검색 = Button(window, font = TempFont, text = "검색", command = PutBtn검색)
+    Btn검색.place(x = 725, y = 60, width = 150, height = 50)
+
 def InitBtn관광지():
     global Btn관광지
 
@@ -72,13 +86,6 @@ def InitBtn음식점():
     Btn음식점 = Button(window, font = TempFont, text = "음식점", command = PutBtn음식점)
     Btn음식점.place(x = 670, y = 300, width = 200, height = 150)
 
-def InitBtn검색():
-    global Btn검색
-
-    TempFont = font.Font(window, size = 12, weight = 'bold', family = 'Consolas')
-    Btn검색 = Button(window, font = TempFont, text = "검색", command = PutBtn검색)
-    Btn검색.place(x = 725, y = 60, width = 150, height = 50)
-
 def InitBtn이전():
     global Btn이전
 
@@ -86,12 +93,21 @@ def InitBtn이전():
     Btn이전 = Button(window, font = TempFont, text = "이전", command = PutBtn이전)
     Btn이전.place(x = 10, y = -1000, width = 100, height = 50)
 
-def InitInputLabel():
-    global InputLabel, EntryText
-    TempFont = font.Font(window, size = 15, weight = 'bold', family = 'Consolas')
-    EntryText = StringVar()
-    InputLabel = Entry(window, font = TempFont, width = 26, borderwidth = 12, relief = 'ridge', textvariable = EntryText)
-    InputLabel.place(x = 10, y = 60, width = 700)
+def InitRenderText():
+    global RenderText, RenderTextScrollbar
+
+    RenderTextScrollbar = Scrollbar(window)
+    RenderTextScrollbar.pack()
+
+    TempFont = font.Font(window, size = 10, family = 'Consolas')
+    RenderText = Text(window, width = 120, height = 25, borderwidth = 5, relief = 'ridge', yscrollcommand=RenderTextScrollbar.set)
+    RenderText.place(x = 10, y = 530)
+
+    # RenderTextScrollbar.place(x = 10, y = 105)
+    RenderTextScrollbar.config(command = RenderText.yview)
+    RenderTextScrollbar.pack(side = RIGHT, fill = BOTH)
+
+    # RenderText.configure(state = 'disabled')
 
 def MoveBtns():
     RenderText.place(y = 110)
@@ -186,22 +202,6 @@ def PutBtn음식점():
 def PutBtn이전():
     print("이전 눌림")
     MoveBtnsBack()
-
-def InitRenderText():
-    global RenderText, RenderTextScrollbar
-
-    RenderTextScrollbar = Scrollbar(window)
-    RenderTextScrollbar.pack()
-
-    TempFont = font.Font(window, size = 10, family = 'Consolas')
-    RenderText = Text(window, width = 120, height = 25, borderwidth = 5, relief = 'ridge', yscrollcommand=RenderTextScrollbar.set)
-    RenderText.place(x = 10, y = 530)
-
-    # RenderTextScrollbar.place(x = 10, y = 105)
-    RenderTextScrollbar.config(command = RenderText.yview)
-    RenderTextScrollbar.pack(side = RIGHT, fill = BOTH)
-
-    # RenderText.configure(state = 'disabled')
 
 def 관광지정보조회(오퍼레이션, 장소):
     global dom, items
